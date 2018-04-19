@@ -11,9 +11,14 @@ There are no internet connection in the cottage, so we need another solution wit
 Consequently, we have thinking to use GSM communication.
 
 We want with an order by text message:
-Enable or disable heating
-Enable or disable motion detection
-Send alert by text message when the mode is enable and the motion detector detect someone
-Reply the temperature and humidity of the room after request
+Enable or disable heating.
+Enable or disable motion detection.
+Send alert by text message when the mode is enable and the motion detector detect someone.
+Reply the temperature and humidity of the room after request.
 
 -------------------------------------***APPLIANCE***-------------------------------------
+Arduino UNO,
+GSM Arduino shield 2,
+8x relays,
+DHT 22,
+PIR motion
