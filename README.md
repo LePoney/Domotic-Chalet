@@ -17,6 +17,7 @@ Send alert by text message when the mode is enable and the motion detector detec
 Reply the temperature and humidity of the room after request.
 
 -------------------------------------***APPLIANCE***-------------------------------------
+
 Arduino UNO,
 GSM Arduino shield 2,
 8x relays,
