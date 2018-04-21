@@ -28,9 +28,7 @@ GSM gsmAccess;
 GSM_SMS sms;
 
 // Publics variables
-char msgFromNumber[13];
-char msgToNumber[13];
-
+char msgFromNumber[20];
 
 /* ----- ----- ----- ----- FUNCTION SETUP() ----- ----- ----- ----- */
 void setup() {
@@ -41,8 +39,10 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  
-  Serial.println("Test receives and sends SMS");
+
+  Serial.println("*****************************************************");
+  Serial.println("*************Test receives and sends SMS*************");
+  Serial.println("*****************************************************");
 
   // Setting pin used in sketch
   pinMode(relais1, OUTPUT);
@@ -69,6 +69,7 @@ void setup() {
   Serial.println("STATUS SETUP: GSM connected");
   
   Serial.println("STATUS SETUP: Waiting for message");
+  Serial.println("*****************************************************");
 }
 /* ----- ----- ----- ----- FUNCTION LOOP() ----- ----- ----- ----- */
 void loop() {  
@@ -80,29 +81,31 @@ void loop() {
 }
 
 /* ----- ----- ----- ----- FUNCTION SENDSMS() ----- ----- ----- ----- */
-void sendSMS(char payloadSend[50]){
+void sendSMS(char number[20], char payloadSend[50]){
+  Serial.println("*****************************************************");
   Serial.print("STATUS SEND MESSAGE: Message to ");
-  msgToNumber[13] = msgFromNumber[13];
-  Serial.println(msgToNumber);
+  Serial.println(number);
 
-  Serial.print("Text message: ");
+  Serial.print("TEXT MESSAGE: ");
   Serial.println(payloadSend);
 
   Serial.println("STATUS SEND MESSAGE: Preparing");
-  sms.beginSMS(msgToNumber);
+  sms.beginSMS(number);
   Serial.println("STATUS SEND MESSAGE: Writing");
   sms.print(payloadSend);
   sms.endSMS();
   Serial.println("STATUS SEND MESSAGE: Complete");
+  Serial.println("*****************************************************");
 }
 
 /* ----- ----- ----- ----- FUNCTION RECEIVESMS() ----- ----- ----- ----- */
 void receiveSMS(){
+  Serial.println("*****************************************************");
   char payloadReceive;
   Serial.print("STATUS RECEIVE MESSAGE: Message from ");
 
   // Get sender number
-  sms.remoteNumber(msgFromNumber, 13);
+  sms.remoteNumber(msgFromNumber, 20);
   Serial.println(msgFromNumber);
 
   // An example of message delete
@@ -112,17 +115,19 @@ void receiveSMS(){
     sms.flush(); // Delete message from modem memory
   }
 
+  Serial.print("TEXT MESSAGE: ");
   // Read message bytes and print them
   while (payloadReceive = sms.read()) {
-    Serial.println("Message: ");
-    Serial.println(payloadReceive);
+    Serial.print(payloadReceive);
   }
-
+  
+  Serial.println();
   Serial.println("STATUS RECEIVE MESSAGE: End of message");
 
   sms.flush(); // Delete message from modem memory
-  Serial.println(" STATUS RECEIVE MESSAGE: Message deleted");
-
+  Serial.println("STATUS RECEIVE MESSAGE: Message deleted");
+  Serial.println("*****************************************************");
+  
   // Function start
-  sendSMS("HELLO WORLD");
+  sendSMS(msgFromNumber, "HELLO WORLD !");
 }
