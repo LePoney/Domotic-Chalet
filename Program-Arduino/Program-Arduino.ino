@@ -2,7 +2,7 @@
  * Title: Test receiver and sender SMS
  * 
  * Author: Romain SCHNOEBELEN
- * Date: 19/04/2018
+ * Date: 21/04/2018
  * 
  * Description: When SMS coming, the sender number and the message payload are print on moniteur.
  *              After that, an reply SMS are printing on moniteur and sending to the last sender number.
@@ -28,9 +28,8 @@ GSM gsmAccess;
 GSM_SMS sms;
 
 // Publics variables
-char msgFromNumber[20];
-char msgToNumber[20];
-char txtMsg[200]="Hello World";
+char msgFromNumber[13];
+char msgToNumber[13];
 
 
 /* ----- ----- ----- ----- FUNCTION SETUP() ----- ----- ----- ----- */
@@ -72,53 +71,58 @@ void setup() {
   Serial.println("STATUS SETUP: Waiting for message");
 }
 /* ----- ----- ----- ----- FUNCTION LOOP() ----- ----- ----- ----- */
-void loop() {
-  char c;
-  
+void loop() {  
   // If there are any SMSs available
   if (sms.available()) {
-    Serial.print("STATUS RECEIVE MESSAGE: Message from ");
-
-    // Get sender number
-    sms.remoteNumber(msgFromNumber, 20);
-    Serial.println(msgFromNumber);
-
-    // An example of message delete
-    // Any messages starting with # should be discarded
-    if (sms.peek() == '#') {
-      Serial.println("STATUS RECEIVE MESSAGE: Message discarded");
-      sms.flush(); // Delete message from modem memory
-    }
-
-    // Read message bytes and print them
-    while (c = sms.read()) {
-      Serial.println("Message: ");
-      Serial.println(c);
-    }
-
-    Serial.println("STATUS RECEIVE MESSAGE: End of message");
-
-    sms.flush(); // Delete message from modem memory
-    Serial.println(" STATUS RECEIVE MESSAGE: Message deleted");
-
     // Function start
-    sendSMS();
+    receiveSMS();
   }
 }
 
 /* ----- ----- ----- ----- FUNCTION SENDSMS() ----- ----- ----- ----- */
-void sendSMS(){
+void sendSMS(char payloadSend[50]){
   Serial.print("STATUS SEND MESSAGE: Message to ");
-  msgToNumber[20] = msgFromNumber[20];
+  msgToNumber[13] = msgFromNumber[13];
   Serial.println(msgToNumber);
 
   Serial.print("Text message: ");
-  Serial.println(txtMsg);
+  Serial.println(payloadSend);
 
   Serial.println("STATUS SEND MESSAGE: Preparing");
   sms.beginSMS(msgToNumber);
   Serial.println("STATUS SEND MESSAGE: Writing");
-  sms.print(txtMsg);
+  sms.print(payloadSend);
   sms.endSMS();
   Serial.println("STATUS SEND MESSAGE: Complete");
+}
+
+/* ----- ----- ----- ----- FUNCTION RECEIVESMS() ----- ----- ----- ----- */
+void receiveSMS(){
+  char payloadReceive;
+  Serial.print("STATUS RECEIVE MESSAGE: Message from ");
+
+  // Get sender number
+  sms.remoteNumber(msgFromNumber, 13);
+  Serial.println(msgFromNumber);
+
+  // An example of message delete
+  // Any messages starting with # should be discarded
+  if (sms.peek() == '#') {
+    Serial.println("STATUS RECEIVE MESSAGE: Message discarded");
+    sms.flush(); // Delete message from modem memory
+  }
+
+  // Read message bytes and print them
+  while (payloadReceive = sms.read()) {
+    Serial.println("Message: ");
+    Serial.println(payloadReceive);
+  }
+
+  Serial.println("STATUS RECEIVE MESSAGE: End of message");
+
+  sms.flush(); // Delete message from modem memory
+  Serial.println(" STATUS RECEIVE MESSAGE: Message deleted");
+
+  // Function start
+  sendSMS("HELLO WORLD");
 }
